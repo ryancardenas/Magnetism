@@ -1,9 +1,25 @@
-body {
+* {
+  box-sizing: border-box;
+}
+
+.simdiv {
+  width: 99vw;
+  height: 97vh;
   background-color: lightblue;
 }
 
+/* Used for testing div size. */
+.testdiv {
+  background-color: green;
+}
+
+body {
+  background-color: grey;
+  text-align: center;
+}
+
 h1 {
-  color: white;
+  color: black;
   text-align: center;
 }
 

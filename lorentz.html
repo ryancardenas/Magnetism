@@ -5,16 +5,21 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="author" content="Ryan Cardenas" />
-  <link rel="stylesheet" type="text/css" href="\master.css" />
+  <link rel="stylesheet" type="text/css" href="css/master.css" />
 </head>
 
 <body>
-
+<div class="simdiv">
   <h1>Lorentz Force Simulator</h1>
   <p>This simulation demonstrates how a charged particle moves in an magnetic field.</p>
   <a href="index.html">
     <button type="button" name="Lorentz">Back to Magnetism</button>
   </a>
+  <div class="testdiv">
+    <canvas id="sim" width="800" height="600"  style="border:1px solid #000000;"></canvas>
+    <script src="scripts/lorentzforce.js"></script>
+  </div>
+</div>
 
 </body>
 
