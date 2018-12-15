@@ -28,14 +28,13 @@ var main = function(){
   function update() {
     ctx.clearRect(0,0,cw,ch);
     resize(canvas);
+
+    //width and height indicators
     ctx.fillText("Width: " + cw, 10, 50);
     ctx.fillText("Height: " + ch, 10, 70);
-    ctx.beginPath();
-    ctx.moveTo(20,20);
-    ctx.lineTo(200,80);
-    ctx.lineTo(500,700);
     ctx.stroke();
 
+    //bouncing ball
     ctx.beginPath();
     ctx.fillStyle = 'red';
     ctx.arc(bX, bY, 20, 0, Math.PI * 360);
@@ -46,7 +45,6 @@ var main = function(){
     if ((bY >= ch && mY > 0) || (bY <= 0 && mY < 0)) {
         mY *= -1;
     }
-
     bX += (mX * delta);
     bY += (mY * delta);
 
@@ -61,6 +59,19 @@ var main = function(){
           ch = displayHeight;
         }
   }
+
+  function drawBfield(direction) {
+    ctx.beginPath();
+
+    ctx.moveTo(x - 20, y - 20);
+    ctx.lineTo(x + 20, y + 20);
+    ctx.strokeStyle =
+    ctx.stroke();
+
+    ctx.moveTo(x + 20, y - 20);
+    ctx.lineTo(x - 20, y + 20);
+    ctx.stroke();
+}
 }
 
 main();
