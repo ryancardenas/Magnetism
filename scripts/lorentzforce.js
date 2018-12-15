@@ -17,6 +17,7 @@ function main(){
   //1000 ms / 60 FPS = 16.667 ms per frame
   var frameperiod = 1000 / 60;
 
+  window.addEventListener('keydown', usercontrols);
   window.requestAnimationFrame(gameloop);
 
   function gameloop(){
@@ -117,6 +118,18 @@ function main(){
     ctx.fillStyle = 'red';
     ctx.fillText("spacing: " + spacing, 10, 90);
     ctx.fillText("flux: " + flux, 10, 110);
+  }
+
+  function usercontrols(e) {
+    switch (e.which) {
+            case 37: alert("Left"); break; //Left key
+            case 38: alert("Up"); break; //Up key
+            case 39: alert("Right"); break; //Right key
+            case 40: alert("Down"); break; //Down key
+            case 81: bfielddirection = 'into'; break;
+            case 69: bfielddirection = 'out'; break;
+            default: alert(e.which); //Everything else
+        }
   }
 
 }
