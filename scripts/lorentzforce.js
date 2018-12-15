@@ -1,4 +1,4 @@
-var main = function(){
+function main(){
   var canvas = document.getElementById('canvas');
   var ctx = canvas.getContext('2d')
   var cw = canvas.width;
@@ -11,6 +11,8 @@ var main = function(){
     bY = 30,
     mX = 150,
     mY = 300;
+  var bfieldstrength = 12.4; //units of 1 nT = 1 E-9 T
+  var bfielddirection = 'out';
 
   //1000 ms / 60 FPS = 16.667 ms per frame
   var frameperiod = 1000 / 60;
@@ -29,24 +31,33 @@ var main = function(){
     ctx.clearRect(0,0,cw,ch);
     resize(canvas);
 
-    //width and height indicators
-    ctx.fillText("Width: " + cw, 10, 50);
-    ctx.fillText("Height: " + ch, 10, 70);
-    ctx.stroke();
+    /*insert draw loop here -- make it iterate over every entity,
+      determine what type of entity, and based on the type go through
+      the appropriate steps to draw.
+    */
+      drawfield(bfieldstrength, bfielddirection);
 
-    //bouncing ball
-    ctx.beginPath();
-    ctx.fillStyle = 'red';
-    ctx.arc(bX, bY, 20, 0, Math.PI * 360);
-    ctx.fill();
-    if ((bX >= cw && mX > 0) || (bX <= 0 && mX < 0)) {
-        mX *= -1;
-    }
-    if ((bY >= ch && mY > 0) || (bY <= 0 && mY < 0)) {
-        mY *= -1;
-    }
-    bX += (mX * delta);
-    bY += (mY * delta);
+      //width and height indicators
+      ctx.fillStyle = 'red';
+      ctx.fillText("Width: " + cw, 10, 50);
+      ctx.fillText("Height: " + ch, 10, 70);
+
+      //bouncing ball
+      ctx.fillStyle = 'red';
+      ctx.beginPath();
+      ctx.arc(bX, bY, 20, 0, 2 * Math.PI);
+      ctx.fill();
+      ctx.strokeStyle = 'black';
+      ctx.lineWidth = 3;
+      ctx.stroke();
+      if ((bX >= cw && mX > 0) || (bX <= 0 && mX < 0)) {
+          mX *= -1;
+      }
+      if ((bY >= ch && mY > 0) || (bY <= 0 && mY < 0)) {
+          mY *= -1;
+      }
+      bX += (mX * delta);
+      bY += (mY * delta);
 
   }
 
@@ -60,18 +71,54 @@ var main = function(){
         }
   }
 
-  function drawBfield(direction) {
-    ctx.beginPath();
+  //draw magnetic field
+  function drawfield(strength, direction) {
+    var r = 20;
+    var x, y;
+    var xmaxflux = 100; //specifies max flux along x-axis
+    var flux, windowsize, spacing, scale;
 
-    ctx.moveTo(x - 20, y - 20);
-    ctx.lineTo(x + 20, y + 20);
-    ctx.strokeStyle =
-    ctx.stroke();
+    //determine flux density
+    flux = xmaxflux * strength / 100;
+    windowsize = cw > ch ? cw : ch;
+    spacing = Math.ceil(windowsize / flux);
+    scale = 0.0008 * windowsize;
+    r *= scale;
+    x = y = spacing / 2;
 
-    ctx.moveTo(x + 20, y - 20);
-    ctx.lineTo(x - 20, y + 20);
-    ctx.stroke();
-}
+    while (x <= cw + r){
+      while (y <= ch + r){
+        //draw an 'X'
+        if (direction === 'into'){
+          ctx.beginPath();
+          ctx.strokeStyle = 'green';
+          ctx.lineWidth = 4 * scale;
+          ctx.moveTo(x - r, y - r);
+          ctx.lineTo(x + r, y + r);
+          ctx.stroke();
+          ctx.moveTo(x + r, y - r);
+          ctx.lineTo(x - r, y + r);
+          ctx.stroke();
+        }
+
+        //draw a dot
+        else if ( direction === 'out'){
+          ctx.beginPath();
+          ctx.fillStyle = 'rgba(0, 128, 0, 0.7)';
+          ctx.arc(x, y, r, 0, 2 * Math.PI);
+          ctx.fill();
+        }
+        y += spacing;
+      }
+      y = spacing / 2;
+      x += spacing;
+    }
+    //for debugging/////////////////////////////////////////////////////////////////////////////////////
+    ctx.fillStyle = 'red';
+    ctx.fillText("spacing: " + spacing, 10, 90);
+    ctx.fillText("flux: " + flux, 10, 110);
+  }
+
 }
 
 main();
