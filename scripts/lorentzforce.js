@@ -11,8 +11,9 @@ function main(){
     bY = 30,
     mX = 150,
     mY = 300;
-  var bfieldstrength = 12.4; //units of 1 nT = 1 E-9 T
+  var bfieldstrength = 10; //units of 1 nT = 1 E-9 T
   var bfielddirection = 'out';
+  var key = '';
 
   //1000 ms / 60 FPS = 16.667 ms per frame
   var frameperiod = 1000 / 60;
@@ -42,6 +43,7 @@ function main(){
       ctx.fillStyle = 'red';
       ctx.fillText("Width: " + cw, 10, 50);
       ctx.fillText("Height: " + ch, 10, 70);
+      ctx.fillText("Key: " + key, 10, 130);
 
       //bouncing ball
       ctx.fillStyle = 'red';
@@ -74,7 +76,7 @@ function main(){
 
   //draw magnetic field
   function drawfield(strength, direction) {
-    var r = 20;
+    var r = 15;
     var x, y;
     var xmaxflux = 100; //specifies max flux along x-axis
     var flux, windowsize, spacing, scale;
@@ -93,7 +95,7 @@ function main(){
         if (direction === 'into'){
           ctx.beginPath();
           ctx.strokeStyle = 'green';
-          ctx.lineWidth = 4 * scale;
+          ctx.lineWidth = 3 * scale;
           ctx.moveTo(x - r, y - r);
           ctx.lineTo(x + r, y + r);
           ctx.stroke();
@@ -105,8 +107,8 @@ function main(){
         //draw a dot
         else if ( direction === 'out'){
           ctx.beginPath();
-          ctx.fillStyle = 'rgba(0, 128, 0, 0.7)';
-          ctx.arc(x, y, r, 0, 2 * Math.PI);
+          ctx.fillStyle = 'rgba(0, 128, 0, 0.6)';
+          ctx.arc(x, y, r / 1.5, 0, 2 * Math.PI);
           ctx.fill();
         }
         y += spacing;
@@ -122,13 +124,9 @@ function main(){
 
   function usercontrols(e) {
     switch (e.which) {
-            case 37: alert("Left"); break; //Left key
-            case 38: alert("Up"); break; //Up key
-            case 39: alert("Right"); break; //Right key
-            case 40: alert("Down"); break; //Down key
-            case 81: bfielddirection = 'into'; break;
-            case 69: bfielddirection = 'out'; break;
-            default: alert(e.which); //Everything else
+            case 81: bfielddirection = 'into'; key = e.which; break;
+            case 69: bfielddirection = 'out'; key = e.which; break;
+            default: key = e.which;
         }
   }
 
