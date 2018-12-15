@@ -2,18 +2,15 @@
   box-sizing: border-box;
 }
 
-.simdiv {
+.sim {
   width: 99vw;
   height: 97vh;
   background-color: lightblue;
 }
 
-/* Used for testing div size. */
-.testdiv {
-  background-color: green;
-}
-
-body {
+html, body {
+  width: 95vw;
+  height: 95vh;
   background-color: grey;
   text-align: center;
 }
