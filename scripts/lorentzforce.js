@@ -14,7 +14,7 @@
   var bfielddirection = 'out';
   var key = '';
 
-  var obj = new circle(30, 30, 20, 150, 300);
+  var obj = new circle(30, 30, 15, 150, 300);
 
   //1000 ms / 60 FPS = 16.667 ms per frame
   var frameperiod = 1000 / 60;
@@ -47,7 +47,7 @@
     ctx.fillText("Key: " + obj.r, 10, 130);
 
     //bouncing ball
-
+    obj.r = obj.r0 * obj.scale * windowsize;
     ctx.fillStyle = 'red';
     ctx.beginPath();
     ctx.arc(obj.x, obj.y, obj.r, 0, 2 * Math.PI);
@@ -61,8 +61,8 @@
     if ((obj.y >= ch && obj.vy > 0) || (obj.y <= 0 && obj.vy < 0)) {
         obj.vy *= -1;
     }
-    obj.x += (obj.vx * delta);
-    obj.y += (obj.vy * delta);
+    obj.x += obj.scale * windowsize * (obj.vx * delta);
+    obj.y += obj.scale * windowsize * (obj.vy * delta);
 
   }
 
@@ -77,9 +77,7 @@
           windowsize = cw > ch ? cw : ch;
     }
 
-    obj.r = obj.r0 * obj.scale * windowsize;
-    // obj.vx *= obj.scale * deltasize;
-    // obj.vy *= obj.scale * deltasize;
+
 
   }
 
