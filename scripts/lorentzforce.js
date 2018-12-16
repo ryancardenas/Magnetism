@@ -11,7 +11,7 @@ function main(){
 
   var maxbfield = 50;
   var bfield = [0, 0, 10]; //units of 1 nT = 1 E-9 T
-  var bspeed = 1; //rate of change of magnetic field
+  var bspeed = 0.5; //rate of change of magnetic field
   var lorentzforce;
   var velocity;
   var acceleration;
@@ -107,7 +107,7 @@ function main(){
 
   //draw magnetic field
   function drawfield(field) {
-    var r, r0 = 10;
+    var r, r0 = 20;
     var x, x0, y, y0, layer;
     var flux, spacing;
     var scale = 0.0008
@@ -116,7 +116,8 @@ function main(){
     flux = magnitude3(field);
     flux = flux != 0 ? flux : 1e-30;
     spacing = Math.ceil(windowsize / flux);
-    r = r0 * scale * windowsize / (0.1 * flux);
+    r = r0 * scale * windowsize / (0.3 * Math.sqrt(flux));
+    r = r > r0 ? r0 : r;
     x = y = spacing / 2;
     layer = 0;
 
@@ -141,7 +142,7 @@ function main(){
           field[2] > 0 ){
         ctx.beginPath();
         ctx.strokeStyle = 'green';
-        ctx.lineWidth = 3 * scale * windowsize / (0.1 * flux);
+        ctx.lineWidth = 3 * r / r0;
         ctx.moveTo(x - r, y - r);
         ctx.lineTo(x + r, y + r);
         ctx.stroke();
