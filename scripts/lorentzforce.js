@@ -1,19 +1,20 @@
-function main(){
+//function main(){
   var canvas = document.getElementById('canvas');
   var ctx = canvas.getContext('2d')
-  var cw = canvas.width;
-  var ch = canvas.height;
+  var cw = window.innerWidth;
+  var ch = window.innerHeight;
   var t0 = (new Date()).getTime();
   var t1 = 0;
   var delta = 0;
-  var fps = 30,
-    bX = 30,
-    bY = 30,
-    mX = 150,
-    mY = 300;
+  var fps = 30;
+  var windowsize = oldwindowsize = cw > ch ? cw : ch;
+  var deltasize;
+
   var bfieldstrength = 10; //units of 1 nT = 1 E-9 T
   var bfielddirection = 'out';
   var key = '';
+
+  var obj = new circle(30, 30, 20, 150, 300);
 
   //1000 ms / 60 FPS = 16.667 ms per frame
   var frameperiod = 1000 / 60;
@@ -31,47 +32,55 @@ function main(){
 
   function update() {
     ctx.clearRect(0,0,cw,ch);
-    resize(canvas);
+    resize(canvas, obj);
 
     /*insert draw loop here -- make it iterate over every entity,
       determine what type of entity, and based on the type go through
       the appropriate steps to draw.
     */
-      drawfield(bfieldstrength, bfielddirection);
+    drawfield(bfieldstrength, bfielddirection);
 
-      //width and height indicators
-      ctx.fillStyle = 'red';
-      ctx.fillText("Width: " + cw, 10, 50);
-      ctx.fillText("Height: " + ch, 10, 70);
-      ctx.fillText("Key: " + key, 10, 130);
+    //width and height indicators
+    ctx.fillStyle = 'red';
+    ctx.fillText("Width: " + cw, 10, 50);
+    ctx.fillText("Height: " + ch, 10, 70);
+    ctx.fillText("Key: " + obj.r, 10, 130);
 
-      //bouncing ball
-      ctx.fillStyle = 'red';
-      ctx.beginPath();
-      ctx.arc(bX, bY, 20, 0, 2 * Math.PI);
-      ctx.fill();
-      ctx.strokeStyle = 'black';
-      ctx.lineWidth = 3;
-      ctx.stroke();
-      if ((bX >= cw && mX > 0) || (bX <= 0 && mX < 0)) {
-          mX *= -1;
-      }
-      if ((bY >= ch && mY > 0) || (bY <= 0 && mY < 0)) {
-          mY *= -1;
-      }
-      bX += (mX * delta);
-      bY += (mY * delta);
+    //bouncing ball
+
+    ctx.fillStyle = 'red';
+    ctx.beginPath();
+    ctx.arc(obj.x, obj.y, obj.r, 0, 2 * Math.PI);
+    ctx.fill();
+    ctx.strokeStyle = 'black';
+    ctx.lineWidth = 3;
+    ctx.stroke();
+    if ((obj.x >= cw && obj.vx > 0) || (obj.x <= 0 && obj.vx < 0)) {
+        obj.vx *= -1;
+    }
+    if ((obj.y >= ch && obj.vy > 0) || (obj.y <= 0 && obj.vy < 0)) {
+        obj.vy *= -1;
+    }
+    obj.x += (obj.vx * delta);
+    obj.y += (obj.vy * delta);
 
   }
 
-  function resize(canvas) {
+  function resize(canvas, obj) {
     var displayWidth = window.innerWidth;
     var displayHeight = window.innerHeight;
+
 
     if (cw != displayWidth || ch != displayHeight){
           cw = displayWidth;
           ch = displayHeight;
-        }
+          windowsize = cw > ch ? cw : ch;
+    }
+
+    obj.r = obj.r0 * obj.scale * windowsize;
+    // obj.vx *= obj.scale * deltasize;
+    // obj.vy *= obj.scale * deltasize;
+
   }
 
   //draw magnetic field
@@ -79,14 +88,14 @@ function main(){
     var r = 15;
     var x, y;
     var xmaxflux = 100; //specifies max flux along x-axis
-    var flux, windowsize, spacing, scale;
+    var flux, windowsize, spacing;
+    var scale = 0.0008
 
     //determine flux density
     flux = xmaxflux * strength / 100;
     windowsize = cw > ch ? cw : ch;
     spacing = Math.ceil(windowsize / flux);
-    scale = 0.0008 * windowsize;
-    r *= scale;
+    r *= scale * windowsize;
     x = y = spacing / 2;
 
     while (x <= cw + r){
@@ -95,7 +104,7 @@ function main(){
         if (direction === 'into'){
           ctx.beginPath();
           ctx.strokeStyle = 'green';
-          ctx.lineWidth = 3 * scale;
+          ctx.lineWidth = 3 * scale * windowsize;
           ctx.moveTo(x - r, y - r);
           ctx.lineTo(x + r, y + r);
           ctx.stroke();
@@ -130,6 +139,6 @@ function main(){
         }
   }
 
-}
+//}
 
-main();
+//main();
