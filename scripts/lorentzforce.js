@@ -9,7 +9,9 @@ function main(){
   var windowsize = oldwindowsize = cw > ch ? cw : ch;
   var deltasize;
 
+  var maxbfield = 50;
   var bfield = [0, 0, 10]; //units of 1 nT = 1 E-9 T
+  var bspeed = 1; //rate of change of magnetic field
   var lorentzforce;
   var velocity;
   var acceleration;
@@ -40,6 +42,10 @@ function main(){
       determine what type of entity, and based on the type go through
       the appropriate steps to draw.
     */
+    //limit the strength of the bfield
+    bfield[2] = bfield[2] > maxbfield ? maxbfield
+              : bfield[2] < -maxbfield ? -maxbfield
+              : bfield[2];
     drawfield(bfield);
 
     //width and height indicators
@@ -65,13 +71,14 @@ function main(){
     ctx.strokeStyle = 'black';
     ctx.lineWidth = 3;
     ctx.stroke();
+
+    //collision detection
     if ((obj.x >= cw && obj.vx > 0) || (obj.x <= 0 && obj.vx < 0)) {
         obj.vx *= -1;
     }
     if ((obj.y >= ch && obj.vy > 0) || (obj.y <= 0 && obj.vy < 0)) {
         obj.vy *= -1;
     }
-
 
     //kinematic computations
     velocity = [obj.vx, obj.vy, 0];
@@ -100,46 +107,22 @@ function main(){
 
   //draw magnetic field
   function drawfield(field) {
-    var r = 15;
-    var x, y;
-    var xmaxflux = 100; //specifies max flux along x-axis
-    var flux, windowsize, spacing;
+    var r, r0 = 10;
+    var x, x0, y, y0, layer;
+    var flux, spacing;
     var scale = 0.0008
 
     //determine flux density
-    flux = xmaxflux * magnitude3(field) / 100;
-    windowsize = cw > ch ? cw : ch;
+    flux = magnitude3(field);
+    flux = flux != 0 ? flux : 1e-30;
     spacing = Math.ceil(windowsize / flux);
-    r *= scale * windowsize;
+    r = r0 * scale * windowsize / (0.1 * flux);
     x = y = spacing / 2;
+    layer = 0;
 
     while (x <= cw + r){
       while (y <= ch + r){
-        //draw an 'X'
-        if ( field[0] === 0 &&
-            field[1] === 0 &&
-            field[2] > 0 ){
-          ctx.beginPath();
-          ctx.strokeStyle = 'green';
-          ctx.lineWidth = 3 * scale * windowsize;
-          ctx.moveTo(x - r, y - r);
-          ctx.lineTo(x + r, y + r);
-          ctx.stroke();
-          ctx.moveTo(x + r, y - r);
-          ctx.lineTo(x - r, y + r);
-          ctx.stroke();
-        }
-
-        //draw a dot
-        else if ( field[0] === 0 &&
-                  field[1] === 0 &&
-                  field[2] < 0 ){
-          ctx.beginPath();
-          ctx.fillStyle = 'rgba(0, 128, 0, 0.6)';
-          ctx.arc(x, y, r / 1.5, 0, 2 * Math.PI);
-          ctx.fill();
-        }
-
+        drawflux();
         y += spacing;
       }
 
@@ -150,17 +133,44 @@ function main(){
     ctx.fillStyle = 'red';
     ctx.fillText("spacing: " + spacing, 10, 90);
     ctx.fillText("flux: " + flux, 10, 110);
+
+    function drawflux(){
+      //draw an 'X'
+      if ( field[0] === 0 &&
+          field[1] === 0 &&
+          field[2] > 0 ){
+        ctx.beginPath();
+        ctx.strokeStyle = 'green';
+        ctx.lineWidth = 3 * scale * windowsize / (0.1 * flux);
+        ctx.moveTo(x - r, y - r);
+        ctx.lineTo(x + r, y + r);
+        ctx.stroke();
+        ctx.moveTo(x + r, y - r);
+        ctx.lineTo(x - r, y + r);
+        ctx.stroke();
+      }
+
+      //draw a dot
+      else if ( field[0] === 0 &&
+                field[1] === 0 &&
+                field[2] < 0 ){
+        ctx.beginPath();
+        ctx.fillStyle = 'rgba(0, 128, 0, 0.6)';
+        ctx.arc(x, y, r / 1.5, 0, 2 * Math.PI);
+        ctx.fill();
+      }
+    }
   }
 
   function usercontrols(e) {
     switch (e.which) {
-      case 70: obj.q *= -1; break;
+      case 69: bfield[2] += bspeed; key = e.which; break;
+      case 70: obj.q *= -1; key = e.which; break;
+      case 81: bfield[2] -=  bspeed; key = e.which; break;
       case 82: bfield[2] *= -1; key = e.which; break;
       default: key = e.which;
     }
-
   }
-
 }
 
 main();
