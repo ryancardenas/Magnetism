@@ -11,7 +11,7 @@ function circle(x, y, r, vx, vy){
   this.accel = magnitude2([this.ax, this.ay]);
   this.scale = 0.0008;
   this.m = 3; //mass
-  this.q = 0; //charge
+  this.q = 0.5; //charge
   this.ke = 0.5 * this.m * this.vel * this.vel;
   this.elastic = true;
 
