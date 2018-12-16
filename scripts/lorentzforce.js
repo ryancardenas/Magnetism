@@ -154,9 +154,8 @@ function main(){
 
   function usercontrols(e) {
     switch (e.which) {
-      case 69: bfield[2] =  -1 * Math.abs(bfield[2]); key = e.which; break;
-      case 81: bfield[2] =  Math.abs(bfield[2]); key = e.which; break;
-      case 70: obj.q *= -1;
+      case 70: obj.q *= -1; break;
+      case 82: bfield[2] *= -1; key = e.which; break;
       default: key = e.which;
     }
 
