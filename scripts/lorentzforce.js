@@ -46,11 +46,19 @@ function main(){
     ctx.fillStyle = 'red';
     ctx.fillText("Width: " + cw, 10, 50);
     ctx.fillText("Height: " + ch, 10, 70);
-    ctx.fillText("Key: " + obj.vel, 10, 130);
+    ctx.fillText("Key: " + key, 10, 130);
 
     //bouncing ball
     obj.r = obj.r0 * obj.scale * windowsize;
-    ctx.fillStyle = 'red';
+    if (obj.q > 0) {
+      ctx.fillStyle = 'red';
+    }
+    else if (obj.q < 0) {
+      ctx.fillStyle = 'blue';
+    }
+    else {
+      ctx.fillStyle = 'grey';
+    }
     ctx.beginPath();
     ctx.arc(obj.x, obj.y, obj.r, 0, 2 * Math.PI);
     ctx.fill();

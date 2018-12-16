@@ -11,7 +11,7 @@ function circle(x, y, r, vx, vy){
   this.accel = magnitude2([this.ax, this.ay]);
   this.scale = 0.0008;
   this.m = 3; //mass
-  this.q = 0.32; //charge
+  this.q = 0; //charge
   this.ke = 0.5 * this.m * this.vel * this.vel;
   this.elastic = true;
 
@@ -19,8 +19,8 @@ function circle(x, y, r, vx, vy){
     this.ax = acceleration[0];
     this.ay = acceleration[1];
     this.accel = magnitude2([this.ax, this.ay]);
-    this.vx += scalingfactor * (this.ax * dt);
-    this.vy += scalingfactor * (this.ay * dt);
+    this.vx += (this.ax * dt);
+    this.vy += (this.ay * dt);
     this.x += scalingfactor * (this.vx * dt);
     this.y += scalingfactor * (this.vy * dt);
     this.vangle = Math.atan2(this.vy, this.vx);
